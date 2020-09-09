@@ -1,6 +1,6 @@
 import os
 import sys
-import zlib
+#import zlib
 import glob
 import shutil
 import datetime
@@ -25,7 +25,7 @@ def copy_md_files():
 
       for d in subdirs:
          end_path = d[-5:]
-         if ('/pdf/' == end_path) or ('/png/' == end_path):
+         if (end_path == '/pdf/') or (end_path == '/png/'):
             shutil.rmtree(d)
    except Exception as e:
       print(e)
@@ -51,12 +51,12 @@ def migrate_archive_to_dropbox(archive):
    """Reads zip file and uploads to dropbox via API.
    """
 
-   with open (archive, 'rb') as file:
+   with open(archive, 'rb') as file:
       data = file.read()
    
    try:
       dbx = dropbox.Dropbox(dropbox_credentials.ACCESS_TOKEN)
-      archive_name='/md_backup_' + str(datetime.datetime.now().date()) + '.gz'
+      archive_name = '/md_backup_' + str(datetime.datetime.now().date()) + '.gz'
       dbx.files_upload(data, archive_name, mute=True)
    except dropbox.exceptions.ApiError as err:
       print('*** API error', err)
