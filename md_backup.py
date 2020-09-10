@@ -1,6 +1,7 @@
+#!/Users/davidodwyer/anaconda3/bin/python
+
 import os
 import sys
-#import zlib
 import glob
 import shutil
 import datetime
