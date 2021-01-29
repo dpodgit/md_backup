@@ -1,12 +1,14 @@
-#!/Users/davidodwyer/anaconda3/bin/python
+#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
 
 import os
 import sys
 import glob
 import shutil
 import datetime
-import dropbox
-import dropbox_credentials 
+#import dropbox
+#import dropbox_credentials 
+import ip_address
+import port_number
 
 ROOT_FOLDER = '/Users/davidodwyer/Documents/Texts'
 TEMP_FOLDER = '/tmp/md_backup'
@@ -40,32 +42,44 @@ def compress_files(directory=TEMP_FOLDER):
    """
    try:
       os.chdir(directory)
-      archive = shutil.make_archive('temp_name', format='zip')
+      filename='md_backup_' + str(datetime.datetime.now().date())
+      archive = shutil.make_archive(filename, format='gztar')
       return archive # archive name; no further chdir
    except Exception as e:
       print("Error Archiving")
       print(e)
       sys.exit(1)
 
-def migrate_archive_to_dropbox(archive):
+#def migrate_archive_to_dropbox(archive):
 
-   """Reads zip file and uploads to dropbox via API.
-   """
+#   """Reads zip file and uploads to dropbox via API.
+#   """
 
-   with open(archive, 'rb') as file:
-      data = file.read()
+#   with open(archive, 'rb') as file:
+#      data = file.read()
    
-   try:
-      dbx = dropbox.Dropbox(dropbox_credentials.ACCESS_TOKEN)
-      archive_name = '/md_backup_' + str(datetime.datetime.now().date()) + '.gz'
-      dbx.files_upload(data, archive_name, mute=True)
-   except dropbox.exceptions.ApiError as err:
-      print('*** API error', err)
+#   try:
+#      dbx = dropbox.Dropbox(dropbox_credentials.ACCESS_TOKEN)
+#      archive_name = '/md_backup_' + str(datetime.datetime.now().date()) + '.gz'
+#      dbx.files_upload(data, archive_name, mute=True)
+#   except dropbox.exceptions.ApiError as err:
+#      print('*** API error', err)
+
+def scp_to_server(archive):
+    """Runs a bash command to scp the archive to server
+    """
+    
+    try:
+       os.system("scp -q -P {0} {1} david@{2}:~/Documents/MD-Backup".format(port_number.NUMBER, archive, ip_address.ADDRESS))
+    except:
+        print("SCP failed")
+        sys.exit(1)
 
 def main():
    copy_md_files()
    archive = compress_files()
-   migrate_archive_to_dropbox(archive)
+   #migrate_archive_to_dropbox(archive)
+   scp_to_server(archive)
 
 if __name__ == '__main__':
    main()
