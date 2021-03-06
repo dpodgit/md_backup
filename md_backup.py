@@ -5,12 +5,10 @@ import sys
 import glob
 import shutil
 import datetime
-#import dropbox
-#import dropbox_credentials 
 import ip_address
 import port_number
 
-ROOT_FOLDER = '/Users/davidodwyer/Documents/Texts'
+ROOT_FOLDER = '/Users/davidodwyer/Documents/Writing'
 TEMP_FOLDER = '/tmp/md_backup'
 
 def copy_md_files():
@@ -49,21 +47,6 @@ def compress_files(directory=TEMP_FOLDER):
       print("Error Archiving")
       print(e)
       sys.exit(1)
-
-#def migrate_archive_to_dropbox(archive):
-
-#   """Reads zip file and uploads to dropbox via API.
-#   """
-
-#   with open(archive, 'rb') as file:
-#      data = file.read()
-   
-#   try:
-#      dbx = dropbox.Dropbox(dropbox_credentials.ACCESS_TOKEN)
-#      archive_name = '/md_backup_' + str(datetime.datetime.now().date()) + '.gz'
-#      dbx.files_upload(data, archive_name, mute=True)
-#   except dropbox.exceptions.ApiError as err:
-#      print('*** API error', err)
 
 def scp_to_server(archive):
     """Runs a bash command to scp the archive to server
